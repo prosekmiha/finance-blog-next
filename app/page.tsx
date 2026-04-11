@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
 import { ArrowRight, TrendingUp, CreditCard, Wallet, PiggyBank, BarChart2, BookOpen } from "lucide-react";
+import AllArticles from "@/components/AllArticles";
+import NewsletterForm from "@/components/NewsletterForm";
 
 const categories = [
   { icon: Wallet, label: "Budget Management", color: "bg-blue-50 text-blue-600" },
@@ -16,11 +18,13 @@ const categoryColors: Record<string, string> = {
   Subscriptions: "bg-violet-100 text-violet-700",
   Lifestyle: "bg-emerald-100 text-emerald-700",
   Housing: "bg-sky-100 text-sky-700",
+  Investing: "bg-blue-100 text-blue-700",
 };
 
 export default function HomePage() {
   const articles = getAllArticles();
-  const [featured, ...sideArticles] = articles;
+  const [featured] = articles;
+  const newPosts = articles.slice(0, 5);
 
   const gradients = [
     "from-blue-500 to-indigo-600",
@@ -114,7 +118,7 @@ export default function HomePage() {
               </Link>
 
               <div className="lg:col-span-2 flex flex-col gap-3">
-                {articles.map((article, i) => (
+                {newPosts.slice(1).map((article, i) => (
                   <Link
                     key={article.slug}
                     href={`/${article.slug}`}
@@ -147,38 +151,7 @@ export default function HomePage() {
             <h2 className="text-xl font-extrabold text-foreground tracking-tight">All Articles</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {articles.map((article, i) => (
-              <Link
-                key={article.slug}
-                href={`/${article.slug}`}
-                className="group rounded-2xl border border-border overflow-hidden hover:shadow-lg transition-all duration-200 flex flex-col bg-white"
-              >
-                <div className={`h-40 bg-linear-to-br ${gradients[i] ?? gradients[0]} flex items-center justify-center text-5xl`}>
-                  {article.emoji}
-                </div>
-                <div className="p-5 flex flex-col gap-2.5 flex-1">
-                  <span className={`inline-block self-start px-2.5 py-0.5 rounded-full text-xs font-semibold ${categoryColors[article.category] ?? "bg-blue-100 text-blue-700"}`}>
-                    {article.category}
-                  </span>
-                  <h3 className="text-base font-bold text-foreground leading-snug group-hover:text-primary transition-colors">
-                    {article.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 flex-1">
-                    {article.description}
-                  </p>
-                  <div className="flex items-center justify-between mt-2 pt-3 border-t border-border">
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(article.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs font-semibold text-primary group-hover:gap-2 transition-all">
-                      Read <ArrowRight size={13} />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <AllArticles articles={articles} />
         </div>
       </section>
 
@@ -194,20 +167,7 @@ export default function HomePage() {
           <p className="text-sm text-muted-foreground mb-6">
             No spam. Just honest breakdowns of what things really cost.
           </p>
-          <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" action="#" method="post">
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
-            />
-            <button
-              type="submit"
-              className="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap"
-            >
-              Subscribe
-            </button>
-          </form>
+          <NewsletterForm />
         </div>
       </section>
     </main>
