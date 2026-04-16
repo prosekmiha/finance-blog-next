@@ -33,6 +33,7 @@ export default function HomePage() {
   return (
     <main className="bg-white">
 
+
       {/* ── Breaking bar ── */}
       <div className="bg-[#0055a5] text-white text-xs font-semibold">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-8 flex items-center gap-3">
