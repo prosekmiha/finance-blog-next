@@ -74,6 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full`}>
 
+
       
       <head>
         <script
