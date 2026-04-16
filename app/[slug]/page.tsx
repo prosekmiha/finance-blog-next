@@ -5,21 +5,38 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllArticles, getArticle, getArticleSlugs } from "@/lib/articles";
 import { CostCalculator } from "@/components/calculators/CostCalculator";
 import { ComparisonCalculator } from "@/components/calculators/ComparisonCalculator";
+import { CreditCardPayoffCalculator } from "@/components/calculators/CreditCardPayoffCalculator";
+import { RetirementCalculator } from "@/components/calculators/RetirementCalculator";
+import { EmergencyFundCalculator } from "@/components/calculators/EmergencyFundCalculator";
+import { RentVsBuyCalculator } from "@/components/calculators/RentVsBuyCalculator";
 import { Clock, ArrowLeft, ArrowRight } from "lucide-react";
+import NewsletterForm from "@/components/NewsletterForm";
 
 const SITE_URL = "https://whatdoesthisreallycost.com";
 const SITE_NAME = "What Does This Really Cost";
 
 const categoryColors: Record<string, string> = {
-  Transportation: "bg-orange-100 text-orange-700",
-  Subscriptions: "bg-violet-100 text-violet-700",
-  Lifestyle: "bg-emerald-100 text-emerald-700",
-  Housing: "bg-sky-100 text-sky-700",
+  Transportation: "text-orange-600 bg-orange-50 border border-orange-200",
+  Subscriptions: "text-violet-600 bg-violet-50 border border-violet-200",
+  Lifestyle: "text-emerald-600 bg-emerald-50 border border-emerald-200",
+  Housing: "text-sky-600 bg-sky-50 border border-sky-200",
+  Investing: "text-blue-600 bg-blue-50 border border-blue-200",
+  Debt: "text-red-600 bg-red-50 border border-red-200",
+  Taxes: "text-gray-600 bg-gray-50 border border-gray-200",
+  Retirement: "text-indigo-600 bg-indigo-50 border border-indigo-200",
+  Insurance: "text-cyan-600 bg-cyan-50 border border-cyan-200",
+  Career: "text-amber-600 bg-amber-50 border border-amber-200",
+  Budgeting: "text-teal-600 bg-teal-50 border border-teal-200",
+  Credit: "text-purple-600 bg-purple-50 border border-purple-200",
 };
 
 const mdxComponents = {
   CostCalculator,
   ComparisonCalculator,
+  CreditCardPayoffCalculator,
+  RetirementCalculator,
+  EmergencyFundCalculator,
+  RentVsBuyCalculator,
 };
 
 export async function generateStaticParams() {
@@ -122,55 +139,45 @@ export default async function ArticlePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
+      {/* Breadcrumb bar */}
+      <div className="bg-gray-50 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-10 flex items-center gap-2 text-xs text-gray-500">
+          <Link href="/" className="hover:text-[#0055a5] transition-colors">Home</Link>
+          <span>/</span>
+          <Link href={`/#articles`} className="hover:text-[#0055a5] transition-colors">{article.category}</Link>
+          <span>/</span>
+          <span className="text-gray-700 font-medium truncate max-w-xs">{article.title}</span>
+        </div>
+      </div>
+
       {/* Article header */}
-      <section className="bg-white border-b border-border">
-        <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10 md:py-14">
-          <nav aria-label="Breadcrumb" className="mb-6">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft size={14} /> All articles
-            </Link>
-          </nav>
-
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
-            <div className="lg:col-span-3">
-              <div className="flex items-center gap-3 mb-5">
-                <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${categoryColors[article.category] ?? "bg-blue-100 text-blue-700"}`}>
-                  {article.category}
-                </span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock size={11} />
-                  {article.readTime} min read
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  <time dateTime={article.publishedAt}>
-                    {new Date(article.publishedAt).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </time>
-                </span>
-              </div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-foreground leading-tight tracking-tight mb-5">
-                {article.title}
-              </h1>
-              <p className="text-base text-muted-foreground leading-relaxed max-w-xl">
-                {article.description}
-              </p>
+      <section className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-3 mb-4">
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide ${categoryColors[article.category] ?? "text-blue-600 bg-blue-50 border border-blue-200"}`}>
+                {article.category}
+              </span>
+              <span className="flex items-center gap-1 text-xs text-gray-400">
+                <Clock size={11} />
+                {article.readTime} min read
+              </span>
+              <time dateTime={article.publishedAt} className="text-xs text-gray-400">
+                {new Date(article.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+              </time>
             </div>
-
-            <div className={`lg:col-span-2 h-44 rounded-2xl bg-linear-to-br ${article.gradient} flex items-center justify-center text-7xl shadow-xl`}>
-              {article.emoji}
-            </div>
+            <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight tracking-tight mb-4">
+              {article.title}
+            </h1>
+            <p className="text-base text-gray-500 leading-relaxed border-l-4 border-[#0055a5] pl-4">
+              {article.description}
+            </p>
           </div>
         </div>
       </section>
 
       {/* Article body */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Main content */}
           <div className="lg:col-span-2">
@@ -222,69 +229,75 @@ export default async function ArticlePage({
 
             {/* Article navigation */}
             <nav
-              className="mt-8 pt-8 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4"
+              className="mt-10 pt-8 border-t border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4"
               aria-label="Article navigation"
             >
               {prevArticle ? (
                 <Link
                   href={`/${prevArticle.slug}`}
-                  className="flex flex-col gap-1 p-4 rounded-2xl border border-border bg-white hover:border-primary/30 hover:shadow-md transition-all"
+                  className="flex flex-col gap-1 p-4 rounded-xl border border-gray-200 bg-white hover:border-[#0055a5] hover:shadow-sm transition-all"
                 >
-                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1 text-xs text-gray-400">
                     <ArrowLeft size={12} /> Previous
                   </span>
-                  <span className="text-sm font-bold text-foreground leading-snug">
+                  <span className="text-sm font-bold text-gray-900 leading-snug">
                     {prevArticle.title}
                   </span>
                 </Link>
-              ) : (
-                <div />
-              )}
+              ) : <div />}
               {nextArticle ? (
                 <Link
                   href={`/${nextArticle.slug}`}
-                  className="flex flex-col gap-1 p-4 rounded-2xl border border-border bg-white hover:border-primary/30 hover:shadow-md transition-all text-right"
+                  className="flex flex-col gap-1 p-4 rounded-xl border border-gray-200 bg-white hover:border-[#0055a5] hover:shadow-sm transition-all text-right"
                 >
-                  <span className="flex items-center justify-end gap-1 text-xs text-muted-foreground">
+                  <span className="flex items-center justify-end gap-1 text-xs text-gray-400">
                     Next <ArrowRight size={12} />
                   </span>
-                  <span className="text-sm font-bold text-foreground leading-snug">
+                  <span className="text-sm font-bold text-gray-900 leading-snug">
                     {nextArticle.title}
                   </span>
                 </Link>
-              ) : (
-                <div />
-              )}
+              ) : <div />}
             </nav>
           </div>
 
           {/* Sidebar */}
           <aside className="hidden lg:block space-y-6">
-            <div className="rounded-2xl border border-border bg-white p-5">
-              <h2 className="text-sm font-extrabold text-foreground mb-4 uppercase tracking-wide">
-                More Articles
-              </h2>
-              <div className="space-y-4">
+            {/* Related articles */}
+            <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+              <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
+                <h2 className="text-[11px] font-black uppercase tracking-widest text-gray-500">
+                  More Articles
+                </h2>
+              </div>
+              <div className="divide-y divide-gray-100">
                 {allArticles
                   .filter((a) => a.slug !== slug)
+                  .slice(0, 8)
                   .map((a) => (
                     <Link
                       key={a.slug}
                       href={`/${a.slug}`}
-                      className="flex items-start gap-3 group"
+                      className="flex items-start gap-3 px-5 py-3.5 group hover:bg-gray-50 transition-colors"
                     >
-                      <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-xl shrink-0">
-                        {a.emoji}
-                      </div>
+                      <span className="text-xl shrink-0 mt-0.5">{a.emoji}</span>
                       <div>
-                        <p className="text-xs font-semibold text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                        <p className="text-xs font-semibold text-gray-800 leading-snug group-hover:text-[#0055a5] transition-colors line-clamp-2">
                           {a.title}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{a.readTime} min read</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">{a.readTime} min read</p>
                       </div>
                     </Link>
                   ))}
               </div>
+            </div>
+
+            {/* Newsletter sidebar */}
+            <div className="rounded-xl border border-[#dde8f5] bg-[#f0f5fb] p-5">
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#0055a5] mb-1">Newsletter</p>
+              <h3 className="text-sm font-black text-gray-900 mb-1.5">The honest money brief</h3>
+              <p className="text-xs text-gray-500 mb-4 leading-relaxed">Real numbers. No fluff. Weekly.</p>
+              <NewsletterForm compact />
             </div>
           </aside>
         </div>

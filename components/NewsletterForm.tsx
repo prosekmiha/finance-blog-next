@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 
 type Status = "idle" | "loading" | "success" | "error";
 
-export default function NewsletterForm() {
+export default function NewsletterForm({ compact = false }: { compact?: boolean }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -21,7 +21,6 @@ export default function NewsletterForm() {
 
     if (error) {
       if (error.code === "23505") {
-        // unique violation — already subscribed
         setErrorMsg("You're already subscribed!");
       } else {
         setErrorMsg("Something went wrong. Please try again.");
@@ -35,17 +34,40 @@ export default function NewsletterForm() {
 
   if (status === "success") {
     return (
-      <p className="text-sm font-semibold text-primary">
-        You&apos;re in! 🎉 We&apos;ll notify you when new articles drop.
+      <p className="text-sm font-semibold text-[#0055a5]">
+        You&apos;re in! We&apos;ll notify you when new articles drop.
       </p>
     );
   }
 
+  if (compact) {
+    return (
+      <form onSubmit={handleSubmit} className="space-y-2">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Your email address"
+          required
+          disabled={status === "loading"}
+          className="w-full px-3 py-2 rounded-lg border border-[#c5d8ef] bg-white text-sm focus:outline-none focus:border-[#0055a5] disabled:opacity-60"
+        />
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="w-full py-2 rounded-lg bg-[#0055a5] text-white text-sm font-bold hover:bg-[#004494] transition-colors disabled:opacity-60"
+        >
+          {status === "loading" ? "Subscribing…" : "Subscribe Free"}
+        </button>
+        {status === "error" && (
+          <p className="text-xs text-red-500">{errorMsg}</p>
+        )}
+      </form>
+    );
+  }
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
       <input
         type="email"
         value={email}
@@ -53,19 +75,17 @@ export default function NewsletterForm() {
         placeholder="Enter your email"
         required
         disabled={status === "loading"}
-        className="flex-1 px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground disabled:opacity-60"
+        className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#0055a5] disabled:opacity-60"
       />
       <button
         type="submit"
         disabled={status === "loading"}
-        className="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap disabled:opacity-60"
+        className="px-5 py-2.5 rounded-xl bg-[#0055a5] text-white text-sm font-bold hover:bg-[#004494] transition-colors whitespace-nowrap disabled:opacity-60"
       >
         {status === "loading" ? "Subscribing…" : "Subscribe"}
       </button>
       {status === "error" && (
-        <p className="w-full text-xs text-red-500 text-center sm:text-left -mt-1">
-          {errorMsg}
-        </p>
+        <p className="w-full text-xs text-red-500 -mt-1">{errorMsg}</p>
       )}
     </form>
   );

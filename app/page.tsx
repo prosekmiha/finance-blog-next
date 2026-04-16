@@ -1,175 +1,227 @@
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
-import { ArrowRight, TrendingUp, CreditCard, Wallet, PiggyBank, BarChart2, BookOpen } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import AllArticles from "@/components/AllArticles";
 import NewsletterForm from "@/components/NewsletterForm";
 
-const categories = [
-  { icon: Wallet, label: "Budget Management", color: "bg-blue-50 text-blue-600" },
-  { icon: CreditCard, label: "Financial Tools", color: "bg-violet-50 text-violet-600" },
-  { icon: PiggyBank, label: "Saving Money", color: "bg-emerald-50 text-emerald-600" },
-  { icon: TrendingUp, label: "Passive Income", color: "bg-orange-50 text-orange-600" },
-  { icon: BarChart2, label: "Financial Literacy", color: "bg-sky-50 text-sky-600" },
-  { icon: BookOpen, label: "Investment Strategy", color: "bg-amber-50 text-amber-600" },
-];
-
 const categoryColors: Record<string, string> = {
-  Transportation: "bg-orange-100 text-orange-700",
-  Subscriptions: "bg-violet-100 text-violet-700",
-  Lifestyle: "bg-emerald-100 text-emerald-700",
-  Housing: "bg-sky-100 text-sky-700",
-  Investing: "bg-blue-100 text-blue-700",
+  Transportation: "text-orange-600",
+  Subscriptions: "text-violet-600",
+  Lifestyle: "text-emerald-600",
+  Housing: "text-sky-600",
+  Investing: "text-blue-600",
+  Debt: "text-red-600",
+  Taxes: "text-gray-600",
+  Retirement: "text-indigo-600",
+  Insurance: "text-cyan-600",
+  Career: "text-amber-600",
+  Budgeting: "text-teal-600",
+  Credit: "text-purple-600",
 };
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+}
 
 export default function HomePage() {
   const articles = getAllArticles();
-  const [featured] = articles;
-  const newPosts = articles.slice(0, 5);
-
-  const gradients = [
-    "from-blue-500 to-indigo-600",
-    "from-violet-500 to-purple-600",
-    "from-emerald-500 to-teal-600",
-  ];
+  const hero = articles[0];
+  const secondary = articles.slice(1, 4);
+  const trending = articles.slice(4, 9);
+  const rest = articles;
 
   return (
-    <main>
-      {/* ── Hero ── */}
-      <section className="bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-8 pt-14 pb-10 md:pt-20 md:pb-14 flex flex-col md:flex-row md:items-center gap-10 md:gap-16">
-          <div className="flex-1 max-w-xl">
-            <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-4">
-              The honest money blog
-            </p>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-foreground leading-[1.13] tracking-tight mb-5">
-              News About Costs and Long-term Spending.
-            </h1>
-            <p className="text-base text-muted-foreground leading-relaxed mb-8 max-w-md">
-              Everything you&apos;ve ever wanted to know about what things truly cost — cars,
-              subscriptions, and lifestyle choices — brought to you honestly.
-            </p>
-            {featured && (
-              <Link
-                href={`/${featured.slug}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
-              >
-                Read Latest <ArrowRight size={15} />
-              </Link>
-            )}
-          </div>
+    <main className="bg-white">
 
-          <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-md w-full">
-            {categories.map(({ icon: Icon, label, color }) => (
-              <div
-                key={label}
-                className="flex flex-col items-start gap-2.5 p-4 rounded-2xl border border-border bg-white hover:shadow-md transition-shadow cursor-default"
-              >
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}>
-                  <Icon size={18} />
-                </div>
-                <span className="text-xs font-semibold text-foreground leading-snug">{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── New Posts (dark section) ── */}
-      <section className="bg-gray-950 text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12 md:py-16">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-extrabold text-white tracking-tight">New Posts</h2>
-            <Link
-              href="/"
-              className="flex items-center gap-1.5 text-sm font-semibold text-white/70 hover:text-white transition-colors"
-            >
-              See All <ArrowRight size={14} />
+      {/* ── Breaking bar ── */}
+      <div className="bg-[#0055a5] text-white text-xs font-semibold">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-8 flex items-center gap-3">
+          <span className="bg-white text-[#0055a5] px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wide">New</span>
+          {hero && (
+            <Link href={`/${hero.slug}`} className="hover:underline truncate">
+              {hero.title}
             </Link>
+          )}
+        </div>
+      </div>
+
+      {/* ── Hero section ── */}
+      <section className="border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-10">
+
+          {/* Page title row */}
+          <div className="mb-6 pb-4 border-b border-gray-900">
+            <h1 className="text-2xl font-black text-gray-900 tracking-tight uppercase">
+              Personal Finance &amp; Cost Analysis
+            </h1>
           </div>
 
-          {featured && (
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-              <Link
-                href={`/${featured.slug}`}
-                className="lg:col-span-3 rounded-2xl overflow-hidden bg-gray-800 hover:bg-gray-750 transition-colors group flex flex-col"
-              >
-                <div className={`h-52 bg-linear-to-br ${featured.gradient} flex items-center justify-center relative overflow-hidden`}>
-                  <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 30% 60%, #fff 0%, transparent 50%)" }} />
-                  <span className="text-6xl">{featured.emoji}</span>
-                </div>
-                <div className="p-6 flex-1 flex flex-col gap-3">
-                  <span className={`inline-block self-start px-2.5 py-0.5 rounded-full text-xs font-semibold ${categoryColors[featured.category] ?? "bg-blue-100 text-blue-700"}`}>
-                    {featured.category}
-                  </span>
-                  <h3 className="text-lg font-bold text-white leading-snug group-hover:text-blue-300 transition-colors">
-                    {featured.title}
-                  </h3>
-                  <p className="text-sm text-white/60 leading-relaxed line-clamp-2 flex-1">
-                    {featured.description}
-                  </p>
-                  <div className="flex items-center gap-2 text-white/40 text-xs mt-1">
-                    <span>What Does This Really Cost</span>
-                    <span>·</span>
-                    <span>{featured.readTime} min read</span>
-                    <span>·</span>
-                    <span>{new Date(featured.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-                  </div>
-                </div>
-              </Link>
+          {hero && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-8">
 
-              <div className="lg:col-span-2 flex flex-col gap-3">
-                {newPosts.slice(1).map((article, i) => (
-                  <Link
-                    key={article.slug}
-                    href={`/${article.slug}`}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-gray-800 hover:bg-gray-700 transition-colors group"
-                  >
-                    <div className={`w-14 h-14 rounded-xl bg-linear-to-br ${gradients[i] ?? gradients[0]} flex items-center justify-center text-2xl shrink-0`}>
+              {/* Hero article */}
+              <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
+                <Link href={`/${hero.slug}`} className="group block">
+                  <div className="bg-gray-100 rounded-lg overflow-hidden mb-4 aspect-16/7 flex items-center justify-center">
+                    <div className="text-7xl">{hero.emoji}</div>
+                  </div>
+                  <span className={`text-xs font-bold uppercase tracking-wide ${categoryColors[hero.category] ?? "text-blue-600"}`}>
+                    {hero.category}
+                  </span>
+                  <h2 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight mt-1.5 mb-2.5 group-hover:text-[#0055a5] transition-colors">
+                    {hero.title}
+                  </h2>
+                  <p className="text-base text-gray-600 leading-relaxed mb-3 line-clamp-3">
+                    {hero.description}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <Clock size={12} />
+                    <span>{hero.readTime} min read</span>
+                    <span>·</span>
+                    <span>{formatDate(hero.publishedAt)}</span>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Secondary articles */}
+              <div className="mt-6 lg:mt-0 flex flex-col divide-y divide-gray-100">
+                {secondary.map((article) => (
+                  <Link key={article.slug} href={`/${article.slug}`} className="group py-4 first:pt-0 flex gap-4">
+                    <div className="w-20 h-16 bg-gray-100 rounded-md flex items-center justify-center text-3xl shrink-0">
                       {article.emoji}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold mb-1 ${categoryColors[article.category] ?? "bg-blue-100 text-blue-700"}`}>
+                      <span className={`text-[10px] font-bold uppercase tracking-wide ${categoryColors[article.category] ?? "text-blue-600"}`}>
                         {article.category}
                       </span>
-                      <p className="text-sm font-semibold text-white leading-snug group-hover:text-blue-300 transition-colors line-clamp-2">
+                      <h3 className="text-sm font-bold text-gray-900 leading-snug mt-0.5 group-hover:text-[#0055a5] transition-colors line-clamp-3">
                         {article.title}
-                      </p>
-                      <p className="text-xs text-white/40 mt-1">{article.readTime} min read</p>
+                      </h3>
+                      <p className="text-[11px] text-gray-400 mt-1">{article.readTime} min read</p>
                     </div>
                   </Link>
                 ))}
               </div>
+
             </div>
           )}
         </div>
       </section>
 
-      {/* ── All Articles grid ── */}
-      <section className="bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-8 py-14">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-extrabold text-foreground tracking-tight">All Articles</h2>
+      {/* ── Main content + sidebar ── */}
+      <section>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
+
+          {/* Left: latest articles list */}
+          <div className="lg:col-span-2">
+            <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 pb-3 border-b-2 border-gray-900 mb-6">
+              Latest Articles
+            </h2>
+            <div className="divide-y divide-gray-100">
+              {articles.slice(0, 8).map((article) => (
+                <Link key={article.slug} href={`/${article.slug}`} className="group flex gap-5 py-5 first:pt-0">
+                  <div className="w-24 h-20 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center text-4xl shrink-0">
+                    {article.emoji}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className={`text-[11px] font-bold uppercase tracking-wide ${categoryColors[article.category] ?? "text-blue-600"}`}>
+                      {article.category}
+                    </span>
+                    <h3 className="text-base font-bold text-gray-900 leading-snug mt-0.5 mb-1.5 group-hover:text-[#0055a5] transition-colors">
+                      {article.title}
+                    </h3>
+                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 mb-2">
+                      {article.description}
+                    </p>
+                    <div className="flex items-center gap-2 text-xs text-gray-400">
+                      <Clock size={11} />
+                      <span>{article.readTime} min read</span>
+                      <span>·</span>
+                      <span>{formatDate(article.publishedAt)}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <Link
+              href="#articles"
+              className="mt-6 flex items-center justify-center gap-2 w-full py-3 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:border-[#0055a5] hover:text-[#0055a5] transition-colors"
+            >
+              View all articles <ArrowRight size={14} />
+            </Link>
           </div>
 
-          <AllArticles articles={articles} />
+          {/* Right: sidebar */}
+          <div className="space-y-8">
+
+            {/* Trending */}
+            <div>
+              <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 pb-3 border-b-2 border-gray-900 mb-4">
+                Trending Now
+              </h2>
+              <ol className="space-y-4">
+                {trending.map((article, i) => (
+                  <li key={article.slug}>
+                    <Link href={`/${article.slug}`} className="group flex gap-3">
+                      <span className="text-3xl font-black text-gray-100 leading-none w-8 shrink-0 select-none">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <div>
+                        <span className={`text-[10px] font-bold uppercase tracking-wide ${categoryColors[article.category] ?? "text-blue-600"}`}>
+                          {article.category}
+                        </span>
+                        <h3 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-[#0055a5] transition-colors mt-0.5">
+                          {article.title}
+                        </h3>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Newsletter */}
+            <div className="bg-[#f0f5fb] rounded-xl p-5 border border-[#dde8f5]">
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#0055a5] mb-1">Newsletter</p>
+              <h3 className="text-base font-black text-gray-900 mb-1.5">The honest money brief</h3>
+              <p className="text-xs text-gray-500 mb-4 leading-relaxed">
+                Real numbers. No fluff. Delivered weekly.
+              </p>
+              <NewsletterForm compact />
+            </div>
+
+            {/* Topics */}
+            <div>
+              <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 pb-3 border-b-2 border-gray-900 mb-4">
+                Browse Topics
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {["Investing", "Retirement", "Budgeting", "Housing", "Debt", "Taxes", "Credit", "Insurance", "Career", "Lifestyle"].map((cat) => (
+                  <a
+                    key={cat}
+                    href="#articles"
+                    className="px-3 py-1.5 text-xs font-semibold border border-gray-200 rounded-full text-gray-600 hover:border-[#0055a5] hover:text-[#0055a5] hover:bg-[#f0f5fb] transition-colors"
+                  >
+                    {cat}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
-      {/* ── Newsletter CTA ── */}
-      <section className="bg-secondary border-t border-border">
-        <div className="max-w-2xl mx-auto px-4 sm:px-8 py-14 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
-            Join the thousands already on the list
-          </p>
-          <h2 className="text-2xl font-extrabold text-foreground mb-2 tracking-tight">
-            Get notified — last news and articles
+      {/* ── All Articles ── */}
+      <section id="articles" className="bg-gray-50 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+          <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 pb-3 border-b-2 border-gray-900 mb-8">
+            All Articles
           </h2>
-          <p className="text-sm text-muted-foreground mb-6">
-            No spam. Just honest breakdowns of what things really cost.
-          </p>
-          <NewsletterForm />
+          <AllArticles articles={rest} />
         </div>
       </section>
+
     </main>
   );
 }
