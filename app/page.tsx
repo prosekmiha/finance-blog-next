@@ -17,6 +17,8 @@ const categoryColors: Record<string, string> = {
   Career: "text-amber-600",
   Budgeting: "text-teal-600",
   Credit: "text-purple-600",
+  Income: "text-green-600",
+  "Real Estate": "text-rose-600",
 };
 
 function formatDate(d: string) {
