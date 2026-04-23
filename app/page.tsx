@@ -21,6 +21,7 @@ const categoryColors: Record<string, string> = {
   "Real Estate": "text-rose-600",
 };
 
+
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
